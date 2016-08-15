@@ -6,13 +6,6 @@
       <script type="text/javascript" src="js/content.js"></script>
 
       <script type="text/javascript">
-        google.charts.load('current', {'packages':['table']});
-        google.charts.setOnLoadCallback(function athleteTable() {
-          athleteSummary("Bruna Rodrigues")
-        });
-      </script>
-
-      <script type="text/javascript">
         function getQueryString(field, url) {
           var href = url ? url : window.location.href;
           var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
@@ -32,6 +25,13 @@
           document.title = "Upforce :: " + athleteName;
 
           console.log("Fetching athlete data: " + athleteName);
+        });
+      </script>
+
+      <script type="text/javascript">
+        google.charts.load('current', {'packages':['table']});
+        google.charts.setOnLoadCallback(function athleteTable() {
+          athleteSummary(getQueryString("name"));
         });
       </script>
     <meta charset="utf-8">
