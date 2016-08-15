@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript" src="js/database.js"></script>
+      <script type="text/javascript" src="js/content.js"></script>
+
+      <script type="text/javascript">
+        google.charts.load('current', {'packages':['table']});
+        google.charts.setOnLoadCallback(function athleteTable() {
+          athleteSummary("Bruna Rodrigues")
+        });
+      </script>
+
+      <script type="text/javascript">
+        function getQueryString(field, url) {
+          var href = url ? url : window.location.href;
+          var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+          var string = reg.exec(href);
+
+          return string ? decodeURIComponent(string[1]) : null;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+          var athleteName = getQueryString("name");
+
+          if (getQueryString("name") == null) {
+            window.location.href = "index.html";
+            alert("Athlete name is null. Redirecting.");
+          }
+
+          document.title = "Upforce :: " + athleteName;
+
+          console.log("Fetching athlete data: " + athleteName);
+        });
+      </script>
+    <meta charset="utf-8">
+    <title>Upforce</title>
+  </head>
+  <body>
+    <!--Div that will hold the pie chart-->
+    <div id="table_div"></div>
+  </body>
+</html>
