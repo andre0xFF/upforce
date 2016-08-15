@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="js/mechanics.js"></script>
+    <script type="text/javascript" src="js/database.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['table']});
+      google.charts.setOnLoadCallback(function athleteTable() {
+        var query = getQuery(getQueryString("query"));
+
+        query.send(function handleQueryResponse(response) {
+          if (response.isError()) {
+            alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+            return;
+          }
+
+          var table = new google.visualization.Table(document.getElementById('table_div'));
+          table.draw(response.getDataTable(), {showRowNumber: false, width: '100%', height: '100%'});
+        });
+      });
+    </script>
+
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div id="table_div"></div>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-function buildQuery(param) {
+function getQuery(param) {
   var queryString = encodeURIComponent(param);
 
   var query = new google.visualization.Query(

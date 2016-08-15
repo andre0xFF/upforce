@@ -3,9 +3,9 @@
 function athleteSummary(name) {
   //var name = "Bruna Rodrigues"
   if(name == "allout") {
-    var query = buildQuery("SELECT A, C, B, F, H, I, J, I + J label I + J 'Total'");    
+    var query = getQuery("SELECT A, C, B, F, H, I, J, I + J label I + J 'Total'");
   } else {
-    var query = buildQuery("SELECT C, B, F, H, I, J, I + J WHERE A = '" + name + "' label I + J 'Total'");
+    var query = getQuery("SELECT C, B, F, H, I, J, I + J WHERE A = '" + name + "' label I + J 'Total'");
   }
 
   query.send(function handleQueryResponse(response) {
