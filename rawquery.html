@@ -2,12 +2,12 @@
 <html>
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="js/mechanics.js"></script>
+    <script type="text/javascript" src="js/helpers.js"></script>
     <script type="text/javascript" src="js/database.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {'packages':['table']});
       google.charts.setOnLoadCallback(function athleteTable() {
-        var query = getQuery(getQueryString("query"));
+        var query = getQuery(getURLParams("query"));
 
         query.send(function handleQueryResponse(response) {
           if (response.isError()) {
