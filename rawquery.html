@@ -7,7 +7,9 @@
     <script type="text/javascript">
       google.charts.load('current', {'packages':['table']});
       google.charts.setOnLoadCallback(function athleteTable() {
-        var query = getQuery(getURLParams("query"));
+
+        var database = new Database();
+        var query = database.getQueryString(getURLParams("query").toUpperCase(), getURLParams("sheet").toLowerCase());
 
         query.send(function handleQueryResponse(response) {
           if (response.isError()) {
@@ -22,7 +24,6 @@
     </script>
 
     <meta charset="utf-8">
-    <title></title>
   </head>
   <body>
     <div id="table_div"></div>

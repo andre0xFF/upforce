@@ -1,8 +1,9 @@
 var Athlete = function(name) {
   this.name = name;
 
+  var database = new Database();
+
   this.getCompetitionResults = function(year, competition) {
-    //var query = getQuery("SELECT C, B, F, H, I, J, I + J WHERE A = '" + name + "' label I + J 'Total'");
 
     var query = "SELECT C, B, F, H, I, J, I + J WHERE A = '" + this.name + "' AND ";
 
@@ -12,16 +13,15 @@ var Athlete = function(name) {
       competition: "B = '" + competition + "'"
     };
 
-    query += year != null ? whereClause["year"] + " AND " : "";
-    query += competition != null ? whereClause["competition"] + " AND " : "";
+    query += year != null && "year" in database.spreadsheets.results ? whereClause.year + " AND " : "";
+    query += competition != null && "competition" in database.spreadsheets.competitions ? whereClause.competition + " AND " : "";
     query = query.substring(0, query.length - 4);
     query += "LABEL I + J 'Total'";
 
-    console.log(query);
+    console.log(query + " FROM results");
 
-    database = new Database();
-    query = database.getQueryString(query, "Results");
-
+    query = database.getQueryString(query, "results");
+    
     query.send(function handleQueryResponse(response) {
 
       if (response.isError()) {
@@ -38,5 +38,4 @@ var Athlete = function(name) {
       });
     });
   }
-
 };
