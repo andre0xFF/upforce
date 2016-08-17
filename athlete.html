@@ -5,7 +5,7 @@
       <script type="text/javascript" src="js/helpers.js"></script>
       <script type="text/javascript" src="js/objects.js"></script>
       <script type="text/javascript" src="js/database.js"></script>
-      
+
       <script type="text/javascript">
         google.charts.load('current', {'packages':['table']});
         google.charts.setOnLoadCallback(function fillTable() {
@@ -21,13 +21,28 @@
 
           console.log("Fetching athlete data: " + athlete.name);
 
-          athlete.getCompetitionResults();
+          // athlete.getCompetitionResults();
+          athlete.getResults(getURLParams("year"), getURLParams("competition")).send(function handleQueryResponse(response) {
+            if (response.isError()) {
+              alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+              return;
+            }
+
+            var table = new google.visualization.Table(document.getElementById('table_div'));
+
+            table.draw(response.getDataTable(), {
+              width: '50%', //height: '100px',
+              alternatingRowStyle: true,
+              sortAscending: false,
+              sortColumn: 6
+            });
+          });
         });
       </script>
     <meta charset="utf-8">
     <title>Upforce</title>
   </head>
-  <body>
+  <body align="center">
     <!--Div that will hold the pie chart-->
     <div id="table_div"></div>
   </body>

@@ -18,7 +18,11 @@
           }
 
           var table = new google.visualization.Table(document.getElementById('table_div'));
-          table.draw(response.getDataTable(), {showRowNumber: false, width: '100%', height: '100%'});
+          table.draw(response.getDataTable(), {
+            alternatingRowStyle: true,
+            sortAscending: false,
+            sortColumn: 6
+          });
         });
       });
     </script>

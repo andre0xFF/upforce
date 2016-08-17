@@ -3,39 +3,25 @@ var Athlete = function(name) {
 
   var database = new Database();
 
-  this.getCompetitionResults = function(year, competition) {
+  this.getResults = function(year, competition) {
+    var s = database.spreadsheets.results;
 
-    var query = "SELECT C, B, F, H, I, J, I + J WHERE A = '" + this.name + "' AND ";
+    var query = "SELECT ".concat(s.year, ", ", s.competition, ", ", s.category,
+                ", ", s.team, ", ", s.snatch, ", ", s.cleanAndJerk, ", ",
+                s.snatch, " + ", s.cleanAndJerk, " WHERE A = '", this.name,
+                "' AND ");
 
-    var whereClause = {
+    query +=  (year != null && "year" in s) ?
+              database.spreadsheets.results.year + " = " + year + " AND " : "";
 
-      year: "C = " + year,
-      competition: "B = '" + competition + "'"
-    };
+    query +=  (competition != null && "competition" in s) ?
+              database.spreadsheets.results.competition + " = '" + competition + "' AND " : "";
 
-    query += year != null && "year" in database.spreadsheets.results ? whereClause.year + " AND " : "";
-    query += competition != null && "competition" in database.spreadsheets.competitions ? whereClause.competition + " AND " : "";
     query = query.substring(0, query.length - 4);
     query += "LABEL I + J 'Total'";
 
-    console.log(query + " FROM results");
+    console.log(query);
 
-    query = database.getQueryString(query, "results");
-    
-    query.send(function handleQueryResponse(response) {
-
-      if (response.isError()) {
-        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-        return;
-      }
-
-      var table = new google.visualization.Table(document.getElementById('table_div'));
-      table.draw(response.getDataTable(), {
-        width: '50%', //height: '100px',
-        alternatingRowStyle: true,
-        sortAscending: false,
-        sortColumn: 6
-      });
-    });
+    return database.getQueryString(query, "results");
   }
 };
