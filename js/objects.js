@@ -6,20 +6,24 @@ var Athlete = function(name) {
   this.getResults = function(year, competition) {
     var s = database.spreadsheets.results;
 
+
     var query = "SELECT ".concat(s.year, ", ", s.competition, ", ", s.category,
                 ", ", s.team, ", ", s.snatch, ", ", s.cleanAndJerk, ", ",
-                s.snatch, " + ", s.cleanAndJerk, " WHERE A = '", this.name,
-                "' AND ");
+                s.snatch, " + ", s.cleanAndJerk, ", ", s.sinclair,
+                " WHERE A = '", this.name, "'"
+              );
 
+    //TODO: Add athlete's place
+    //TODO: Sort with full date
     query +=  (year != null && "year" in s) ?
-              database.spreadsheets.results.year + " = " + year + " AND " : "";
+              " AND " + s.year + " = " + year : "";
 
     query +=  (competition != null && "competition" in s) ?
-              database.spreadsheets.results.competition + " = '" + competition + "' AND " : "";
+              " AND " + s.competition + " = '" + competition + "'" : "";
 
-    query = query.substring(0, query.length - 4);
-    query += "LABEL I + J 'Total'";
-
+    query = query.concat( " ORDER BY ", s.year,
+                          " LABEL ", s.snatch, " + ", s.cleanAndJerk, " 'Total'"
+                        );
     console.log(query);
 
     return database.getQueryString(query, "results");

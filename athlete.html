@@ -7,9 +7,9 @@
       <script type="text/javascript" src="js/database.js"></script>
 
       <script type="text/javascript">
-        google.charts.load('current', {'packages':['table']});
-        google.charts.setOnLoadCallback(function fillTable() {
-          //athleteSummary(getQueryString("name"));
+        google.charts.load('current', {'packages':['table', 'scatter']});
+        google.charts.setOnLoadCallback(function fillTableAndDrawChart() {
+
           var athlete = new Athlete(getURLParams("name"));
 
           if (athlete.name == null) {
@@ -18,24 +18,47 @@
           }
 
           document.title = "Upforce :: " + athlete.name;
-
           console.log("Fetching athlete data: " + athlete.name);
 
-          // athlete.getCompetitionResults();
           athlete.getResults(getURLParams("year"), getURLParams("competition")).send(function handleQueryResponse(response) {
+
             if (response.isError()) {
               alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
               return;
             }
 
+            var data = response.getDataTable();
             var table = new google.visualization.Table(document.getElementById('table_div'));
 
-            table.draw(response.getDataTable(), {
+            table.draw(data, {
               width: '50%', //height: '100px',
               alternatingRowStyle: true,
               sortAscending: false,
-              sortColumn: 6
+              sortColumn: 0,
+              page: "enable",
+              pageSize: 15
             });
+
+            var dataView = new google.visualization.DataView(data);
+
+            dataView.setColumns([
+              { sourceColumn: 0, role: 'domain', type: 'date', label: 'Date' },
+              { sourceColumn: 1, role: 'annotation', type: 'string', label: 'Competition'},
+              { sourceColumn: 4, role: 'data', type: 'number', label: 'Snatch' },
+              { sourceColumn: 5, role: 'data', type: 'number', label: 'Clean & Jerk' }
+            ]);
+
+            var chart = new google.charts.Scatter(document.getElementById('scatterchart'));
+            var options = {
+              chart: {
+                title: 'Athlete progress',
+                subtitle: 'Competition maxes'
+              },
+              hAxis: { title: 'Competitions' },
+              vAxis: { title: 'Weight (kg)' },
+            };
+
+            chart.draw(dataView, google.charts.Scatter.convertOptions(options));
           });
         });
       </script>
@@ -45,5 +68,7 @@
   <body align="center">
     <!--Div that will hold the pie chart-->
     <div id="table_div"></div>
+    <br>
+    <div id="scatterchart" style="width: 600px; height: 400px"></div>
   </body>
 </html>

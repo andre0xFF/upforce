@@ -6,15 +6,13 @@ var Database = function() {
       name:         "A",
       competition:  "B",
       year:         "C",
-      extra:        "D",
-      gender:       "E",
-      category:     "F",
-      weight:       "G",
-      team:         "H",
-      snatch:       "I",
-      cleanAndJerk: "J",
-      // Total: "K",
-      sinclair:     "L"
+      gender:       "D",
+      category:     "E",
+      weight:       "F",
+      team:         "G",
+      snatch:       "H",
+      cleanAndJerk: "I",
+      sinclair:     "J"
     },
     athletes: {
       gid:          1859296831,
@@ -34,8 +32,9 @@ var Database = function() {
       date:         "B"
     }
   };
-  
+
   this.getQueryString = function(param, sheetName) {
+
     return new google.visualization.Query(
       "https://docs.google.com/spreadsheets/d/1JPH3MHxTzwKFkaRP6YlVRty0c5bSB5MHPnR7e6oBWdA/gviz/tq?gid="
       + this.spreadsheets[sheetName].gid

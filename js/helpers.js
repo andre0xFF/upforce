@@ -1,5 +1,5 @@
 function getURLParams(field, url) {
-  
+
   var href = url ? url : window.location.href;
   var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
   var string = reg.exec(href);
