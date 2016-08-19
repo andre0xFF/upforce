@@ -5,7 +5,7 @@ var Database = function() {
       gid:           0,
       name:         "A",
       competition:  "B",
-      year:         "C",
+      date:         "C",
       gender:       "D",
       category:     "E",
       weight:       "F",

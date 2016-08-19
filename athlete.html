@@ -3,24 +3,27 @@
   <head>
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
       <script type="text/javascript" src="js/helpers.js"></script>
-      <script type="text/javascript" src="js/objects.js"></script>
+      <script type="text/javascript" src="js/logic.js"></script>
       <script type="text/javascript" src="js/database.js"></script>
-
       <script type="text/javascript">
         google.charts.load('current', {'packages':['table', 'scatter']});
         google.charts.setOnLoadCallback(function fillTableAndDrawChart() {
 
-          var athlete = new Athlete(getURLParams("name"));
+          var athleteName = getURLParams("name");
+          var year = getURLParams("year");
+          var competition = getURLParams("competition");
 
-          if (athlete.name == null) {
+          //TODO: athletes page
+
+          if (athleteName == null) {
             window.location.href = "index.html";
             alert("Athlete name is null. Redirecting.");
           }
 
-          document.title = "Upforce :: " + athlete.name;
-          console.log("Fetching athlete data: " + athlete.name);
+          document.title = "Upforce :: " + athleteName;
+          console.log("Fetching athlete data: " + athleteName);
 
-          athlete.getResults(getURLParams("year"), getURLParams("competition")).send(function handleQueryResponse(response) {
+          getAthleteResults(athleteName, year, competition).send(function handleQueryResponse(response) {
 
             if (response.isError()) {
               alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
@@ -53,9 +56,7 @@
               chart: {
                 title: 'Athlete progress',
                 subtitle: 'Competition maxes'
-              },
-              hAxis: { title: 'Competitions' },
-              vAxis: { title: 'Weight (kg)' },
+              }
             };
 
             chart.draw(dataView, google.charts.Scatter.convertOptions(options));
@@ -66,9 +67,8 @@
     <title>Upforce</title>
   </head>
   <body align="center">
-    <!--Div that will hold the pie chart-->
     <div id="table_div"></div>
     <br>
-    <div id="scatterchart" style="width: 600px; height: 400px"></div>
+    <div id="scatterchart" style="width: 1000px; height: 400px"></div>
   </body>
 </html>
