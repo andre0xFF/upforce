@@ -32,9 +32,10 @@
 
           console.log("Fetching competition data: ".concat(year, " ", competition, " ", gender, " ", category));
 
-          var div = document.createElement("div");
-          div.setAttribute("id", "table_div_" + gender + "_" + category);
-          document.getElementById("table_div").appendChild(div);
+          // var div = document.createElement("div");
+          // div.setAttribute("id", "table_div_" + gender + "_" + category);
+          // document.getElementById("table_div").appendChild(div);
+          // document.getElementById("table_div").insertBefore(document.createElement("br"), div);
 
           getCompetitionResults(year, competition, gender, category).send(function handleQueryResponse(response) {
 
@@ -44,13 +45,25 @@
             }
 
             var data = response.getDataTable();
+
+            for (var i = 0; i < data.getNumberOfRows(); i++) {
+              var athleteName = data.getValue(i, 0);
+              var team = data.getValue(i, 1);
+              data.setValue(i, 0, "<a href=athlete.html?name=" + encodeURIComponent(athleteName) + ">" + athleteName + "</a>");
+              data.setValue(i, 1, "<a href=team.html?name=" + encodeURIComponent(team) + ">" + team + "</a>");
+            }
+
             var table = new google.visualization.Table(document.getElementById('table_div_' + gender + "_" + category));
+            var options = {
+
+            };
 
             table.draw(data, {
               width: '50%', //height: '100px',
               alternatingRowStyle: true,
               sortAscending: false,
-              sortColumn: 4
+              sortColumn: 4,
+              allowHtml: true
             });
           });
         }
@@ -60,6 +73,22 @@
     <title></title>
   </head>
   <body>
-    <div id="table_div"></div>
+    <div id="table_div" position="absolute">
+      <div id="table_div_male_56" height=100px></div>
+      <div id="table_div_male_62"></div>
+      <div id="table_div_male_69"></div>
+      <div id="table_div_male_77"></div>
+      <div id="table_div_male_85"></div>
+      <div id="table_div_male_94"></div>
+      <div id="table_div_male_105"></div>
+      <div id="table_div_male_105+"></div>
+      <div id="table_div_female_48"></div>
+      <div id="table_div_female_53"></div>
+      <div id="table_div_female_58"></div>
+      <div id="table_div_female_63"></div>
+      <div id="table_div_female_69"></div>
+      <div id="table_div_female_75"></div>
+      <div id="table_div_female_75+"></div>
+    </div>
   </body>
 </html>

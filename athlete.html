@@ -31,16 +31,25 @@
             }
 
             var data = response.getDataTable();
-            var table = new google.visualization.Table(document.getElementById('table_div'));
 
-            table.draw(data, {
+            for (var i = 0; i < data.getNumberOfRows(); i++) {
+              var competition = data.getValue(i, 1);
+              var date = new Date(data.getValue(i, 0));
+              data.setValue(i, 1, "<a href=competition.html?competition=" + encodeURIComponent(competition) + "&year=" + date.getFullYear() + ">" + competition  + "</a>");
+            }
+
+            var table = new google.visualization.Table(document.getElementById('table_div'));
+            var options = {
               width: '50%', //height: '100px',
               alternatingRowStyle: true,
               sortAscending: false,
               sortColumn: 0,
               page: "enable",
-              pageSize: 15
-            });
+              pageSize: 15,
+              allowHtml: true
+            };
+
+            table.draw(data, options);
 
             var dataView = new google.visualization.DataView(data);
 
@@ -56,7 +65,8 @@
               chart: {
                 title: 'Athlete progress',
                 subtitle: 'Competition maxes'
-              }
+              },
+              vAxis: { viewWindow: { max: 190, min: 60 } }
             };
 
             chart.draw(dataView, google.charts.Scatter.convertOptions(options));
