@@ -7,67 +7,59 @@
     <script type="text/javascript" src="js/database.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {'packages':['table']});
-      google.charts.setOnLoadCallback(function fillTableAndDrawChart() {
 
-        var year = getURLParams("year");
-        var competition = getURLParams("competition");
+      var year = getURLParams("year");
+      var competition = getURLParams("competition");
 
-        document.title = "Upforce :: " + year + " " + competition;
+      //TODO: Competition page
 
-        //TODO: Competition page
+      document.title = "Upforce :: " + year + " " + competition;
 
-        var gender = "male";
+      google.charts.setOnLoadCallback(function() {
+        for (var i = 0; i < categories.male.length; i++) {
+          drawCategoryChart(year, competition, "male", categories.male[i]);
+        }
 
-        for (var i = 0; i < categories.male.length + categories.female.length; i++) {
+        // TODO: 105+
 
-          if (i == categories.male.length) {
-            gender = "female";
+        for (var i = 0; i < categories.female.length; i++) {
+          drawCategoryChart(year, competition, "female", categories.female[i]);
+        }
+
+        // TODO: 75+
+      });
+
+      function drawCategoryChart(year, competition, gender, category) {
+
+        var query = getCompetitionResults(year, competition, gender, category);
+
+        query.send(function handleQueryResponse(response) {
+          var data = response.getDataTable();
+
+          for (var i = 0; i < data.getNumberOfRows(); i++) {
+            var athleteName = data.getValue(i, 0);
+            var team = data.getValue(i, 1);
+            data.setValue(i, 0, "<a href=athlete.html?name=" + encodeURIComponent(athleteName) + ">" + athleteName + "</a>");
+            data.setValue(i, 1, "<a href=team.html?name=" + encodeURIComponent(team) + ">" + team + "</a>");
           }
 
-          if (i < categories.male.length) {
-            category = categories.male[i];
-          } else {
-            category = categories.female[i - categories.male.length];
-          }
-
-          console.log("Fetching competition data: ".concat(year, " ", competition, " ", gender, " ", category));
-
-          // var div = document.createElement("div");
-          // div.setAttribute("id", "table_div_" + gender + "_" + category);
-          // document.getElementById("table_div").appendChild(div);
-          // document.getElementById("table_div").insertBefore(document.createElement("br"), div);
-
-          getCompetitionResults(year, competition, gender, category).send(function handleQueryResponse(response) {
-
-            if (response.isError()) {
-              alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-              return;
-            }
-
-            var data = response.getDataTable();
-
-            for (var i = 0; i < data.getNumberOfRows(); i++) {
-              var athleteName = data.getValue(i, 0);
-              var team = data.getValue(i, 1);
-              data.setValue(i, 0, "<a href=athlete.html?name=" + encodeURIComponent(athleteName) + ">" + athleteName + "</a>");
-              data.setValue(i, 1, "<a href=team.html?name=" + encodeURIComponent(team) + ">" + team + "</a>");
-            }
-
-            var table = new google.visualization.Table(document.getElementById('table_div_' + gender + "_" + category));
-            var options = {
-
-            };
-
-            table.draw(data, {
+          var wrapper = new google.visualization.ChartWrapper({
+            chartType: 'Table',
+            dataTable: data,
+            options: {
               width: '50%', //height: '100px',
               alternatingRowStyle: true,
               sortAscending: false,
               sortColumn: 4,
               allowHtml: true
-            });
+            },
+            containerId: 'table_div_' + gender + '_' + category
           });
-        }
-      });
+
+          wrapper.draw();
+
+        });
+      }
     </script>
     <meta charset="utf-8">
     <title></title>
