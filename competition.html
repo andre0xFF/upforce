@@ -20,13 +20,9 @@
           drawCategoryChart(year, competition, "male", categories.male[i]);
         }
 
-        // TODO: 105+
-
         for (var i = 0; i < categories.female.length; i++) {
           drawCategoryChart(year, competition, "female", categories.female[i]);
         }
-
-        // TODO: 75+
       });
 
       function drawCategoryChart(year, competition, gender, category) {
@@ -34,8 +30,25 @@
         var query = getCompetitionResults(year, competition, gender, category);
 
         query.send(function handleQueryResponse(response) {
+
+          if (response.isError()) {
+            return;
+          }
+
           var data = response.getDataTable();
 
+          if (data.getNumberOfRows() == 0) {
+            return;
+          }
+
+          // Table title
+          var h = document.createElement("H2");
+          h.innerHTML = gender + " " + category;
+
+          var table = document.getElementById("table_div");
+          table.insertBefore(h, document.getElementById('table_div_' + gender + '_' + category));
+
+          // Format table values
           for (var i = 0; i < data.getNumberOfRows(); i++) {
             var athleteName = data.getValue(i, 0);
             var team = data.getValue(i, 1);
@@ -43,11 +56,17 @@
             data.setValue(i, 1, "<a href=team.html?name=" + encodeURIComponent(team) + ">" + team + "</a>");
           }
 
+          // Set columns size
+          data.setProperty(0, 0, 'style', 'width:200px');
+          data.setProperty(0, 1, 'style', 'width:150px');
+
+          // Draw table
           var wrapper = new google.visualization.ChartWrapper({
             chartType: 'Table',
             dataTable: data,
             options: {
               width: '50%', //height: '100px',
+              columnProperty: (0, 'style', 'width:200px'),
               alternatingRowStyle: true,
               sortAscending: false,
               sortColumn: 4,
@@ -57,7 +76,6 @@
           });
 
           wrapper.draw();
-
         });
       }
     </script>
@@ -65,8 +83,9 @@
     <title></title>
   </head>
   <body>
+    <h1 id="initial_title"></h1>
     <div id="table_div" position="absolute">
-      <div id="table_div_male_56" height=100px></div>
+      <div id="table_div_male_56"></div>
       <div id="table_div_male_62"></div>
       <div id="table_div_male_69"></div>
       <div id="table_div_male_77"></div>
@@ -82,5 +101,9 @@
       <div id="table_div_female_75"></div>
       <div id="table_div_female_75+"></div>
     </div>
+
+    <script type="text/javascript">
+      document.getElementById("initial_title").innerHTML = getURLParams("year") + " " + getURLParams("competition");
+    </script>
   </body>
 </html>

@@ -7,26 +7,29 @@
       <script type="text/javascript" src="js/database.js"></script>
       <script type="text/javascript">
         google.charts.load('current', {'packages':['table', 'scatter']});
+
+        var athleteName = getURLParams("name");
+        var year = getURLParams("year");
+        var competition = getURLParams("competition");
+
+        //TODO: athletes page
+
+        if (athleteName == null) {
+          window.location.href = "index.html";
+          alert("Athlete name is null. Redirecting.");
+        }
+
+        document.title = "Upforce :: " + athleteName;
+
         google.charts.setOnLoadCallback(function fillTableAndDrawChart() {
 
-          var athleteName = getURLParams("name");
-          var year = getURLParams("year");
-          var competition = getURLParams("competition");
-
-          //TODO: athletes page
-
-          if (athleteName == null) {
-            window.location.href = "index.html";
-            alert("Athlete name is null. Redirecting.");
-          }
-
-          document.title = "Upforce :: " + athleteName;
           console.log("Fetching athlete data: " + athleteName);
 
-          getAthleteResults(athleteName, year, competition).send(function handleQueryResponse(response) {
+          var query = getAthleteResults(athleteName, year, competition);
+
+          query.send(function handleQueryResponse(response) {
 
             if (response.isError()) {
-              alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
               return;
             }
 
@@ -65,8 +68,7 @@
               chart: {
                 title: 'Athlete progress',
                 subtitle: 'Competition maxes'
-              },
-              vAxis: { viewWindow: { max: 190, min: 60 } }
+              }
             };
 
             chart.draw(dataView, google.charts.Scatter.convertOptions(options));
@@ -76,9 +78,8 @@
     <meta charset="utf-8">
     <title>Upforce</title>
   </head>
-  <body align="center">
+  <body>
     <div id="table_div"></div>
-    <br>
     <div id="scatterchart" style="width: 1000px; height: 400px"></div>
   </body>
 </html>
