@@ -38,10 +38,11 @@ function getCompetitionResults(year, competition, gender, category) {
   var s = database.spreadsheets.results;
 
   var query = "SELECT ".concat(
-    s.name, ", ", s.team, ", ", s.snatch, ", ", s.cleanAndJerk,
+    s.place, ", ", s.name, ", ", s.team, ", ", s.snatch, ", ", s.cleanAndJerk,
     ", ", s.snatch, " + ", s.cleanAndJerk, ", ", s.sinclair,
     " WHERE ", s.category, " = '", category, "' AND lower(", s.gender ,") = lower('", gender, "')",
     " AND lower(", s.competition ,") = lower('", competition, "') AND year(", s.date, ") = ", year,
+    " ORDER BY ", s.snatch, " + ", s.cleanAndJerk, " DESC",
     " LABEL ", s.snatch, " + ", s.cleanAndJerk, " 'Total'"
   );
 

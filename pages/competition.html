@@ -2,9 +2,9 @@
 <html>
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="js/helpers.js"></script>
-    <script type="text/javascript" src="js/logic.js"></script>
-    <script type="text/javascript" src="js/database.js"></script>
+    <script type="text/javascript" src="../js/helpers.js"></script>
+    <script type="text/javascript" src="../js/logic.js"></script>
+    <script type="text/javascript" src="../js/database.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {'packages':['table']});
 
@@ -50,10 +50,10 @@
 
           // Format table values
           for (var i = 0; i < data.getNumberOfRows(); i++) {
-            var athleteName = data.getValue(i, 0);
-            var team = data.getValue(i, 1);
-            data.setValue(i, 0, "<a href=athlete.html?name=" + encodeURIComponent(athleteName) + ">" + athleteName + "</a>");
-            data.setValue(i, 1, "<a href=team.html?name=" + encodeURIComponent(team) + ">" + team + "</a>");
+            var athleteName = data.getValue(i, 1);
+            var team = data.getValue(i, 2);
+            data.setValue(i, 1, "<a href=../pages/athlete.html?name=" + encodeURIComponent(athleteName) + ">" + athleteName + "</a>");
+            data.setValue(i, 2, "<a href=../pages/team.html?name=" + encodeURIComponent(team) + ">" + team + "</a>");
           }
 
           // Set columns size
@@ -65,7 +65,7 @@
             chartType: 'Table',
             dataTable: data,
             options: {
-              width: '50%', //height: '100px',
+              width: '100%', //height: '100px',
               columnProperty: (0, 'style', 'width:200px'),
               alternatingRowStyle: true,
               sortAscending: false,

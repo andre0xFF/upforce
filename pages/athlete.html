@@ -2,9 +2,9 @@
 <html>
   <head>
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-      <script type="text/javascript" src="js/helpers.js"></script>
-      <script type="text/javascript" src="js/logic.js"></script>
-      <script type="text/javascript" src="js/database.js"></script>
+      <script type="text/javascript" src="../js/helpers.js"></script>
+      <script type="text/javascript" src="../js/logic.js"></script>
+      <script type="text/javascript" src="../js/database.js"></script>
       <script type="text/javascript">
         google.charts.load('current', {'packages':['table', 'scatter']});
 
@@ -38,12 +38,12 @@
             for (var i = 0; i < data.getNumberOfRows(); i++) {
               var competition = data.getValue(i, 1);
               var date = new Date(data.getValue(i, 0));
-              data.setValue(i, 1, "<a href=competition.html?competition=" + encodeURIComponent(competition) + "&year=" + date.getFullYear() + ">" + competition  + "</a>");
+              data.setValue(i, 1, "<a href=../pages/competition.html?competition=" + encodeURIComponent(competition) + "&year=" + date.getFullYear() + ">" + competition  + "</a>");
             }
 
             var table = new google.visualization.Table(document.getElementById('table_div'));
             var options = {
-              width: '50%', //height: '100px',
+              width: '100%', //height: '100px',
               alternatingRowStyle: true,
               sortAscending: false,
               sortColumn: 0,

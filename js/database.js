@@ -10,9 +10,10 @@ var Database = function() {
       category:     "E",
       weight:       "F",
       team:         "G",
-      snatch:       "H",
-      cleanAndJerk: "I",
-      sinclair:     "J"
+      place:        "H",
+      snatch:       "I",
+      cleanAndJerk: "J",
+      sinclair:     "K"
     },
     athletes: {
       gid:          1859296831,
