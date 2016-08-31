@@ -1,85 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-      <script type="text/javascript" src="../js/helpers.js"></script>
-      <script type="text/javascript" src="../js/logic.js"></script>
-      <script type="text/javascript" src="../js/database.js"></script>
-      <script type="text/javascript">
-        google.charts.load('current', {'packages':['table', 'scatter']});
+    <meta charset="UTF-8">
+    <title>Upforce by Andre Fonseca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="../js/helpers.js"></script>
+    <script type="text/javascript" src="../js/logic.js"></script>
+    <script type="text/javascript" src="../js/database.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['table', 'scatter']});
 
-        var athleteName = getURLParams("name");
-        var year = getURLParams("year");
-        var competition = getURLParams("competition");
+      var athleteName = getURLParams("name");
+      var year = getURLParams("year");
+      var competition = getURLParams("competition");
 
-        //TODO: athletes page
+      //TODO: athletes page
 
-        if (athleteName == null) {
-          window.location.href = "index.html";
-          alert("Athlete name is null. Redirecting.");
-        }
+      if (athleteName == null) {
+        window.location.href = "index.html";
+        alert("Athlete name is null. Redirecting.");
+      }
 
-        document.title = "Upforce :: " + athleteName;
+      document.title = "Upforce :: " + athleteName;
 
-        google.charts.setOnLoadCallback(function fillTableAndDrawChart() {
+      google.charts.setOnLoadCallback(function fillTableAndDrawChart() {
 
-          console.log("Fetching athlete data: " + athleteName);
+        console.log("Fetching athlete data: " + athleteName);
 
-          var query = getAthleteResults(athleteName, year, competition);
+        var query = getAthleteResults(athleteName, year, competition);
 
-          query.send(function handleQueryResponse(response) {
+        query.send(function handleQueryResponse(response) {
 
-            if (response.isError()) {
-              return;
+          if (response.isError()) {
+            return;
+          }
+
+          var data = response.getDataTable();
+
+          for (var i = 0; i < data.getNumberOfRows(); i++) {
+            var competition = data.getValue(i, 1);
+            var date = new Date(data.getValue(i, 0));
+            data.setValue(i, 1, "<a href=../pages/competition.html?competition=" + encodeURIComponent(competition) + "&year=" + date.getFullYear() + ">" + competition  + "</a>");
+          }
+
+          var table = new google.visualization.Table(document.getElementById('table_div'));
+          var options = {
+            width: '100%', //height: '100px',
+            alternatingRowStyle: true,
+            sortAscending: false,
+            sortColumn: 0,
+            page: "enable",
+            pageSize: 15,
+            allowHtml: true
+          };
+
+          table.draw(data, options);
+
+          var dataView = new google.visualization.DataView(data);
+
+          dataView.setColumns([
+            { sourceColumn: 0, role: 'domain', type: 'date', label: 'Date' },
+            { sourceColumn: 1, role: 'annotation', type: 'string', label: 'Competition'},
+            { sourceColumn: 4, role: 'data', type: 'number', label: 'Snatch' },
+            { sourceColumn: 5, role: 'data', type: 'number', label: 'Clean & Jerk' }
+          ]);
+
+          var chart = new google.charts.Scatter(document.getElementById('scatterchart'));
+          var options = {
+            chart: {
+              title: 'Athlete progress',
+              subtitle: 'Competition maxes'
             }
+          };
 
-            var data = response.getDataTable();
-
-            for (var i = 0; i < data.getNumberOfRows(); i++) {
-              var competition = data.getValue(i, 1);
-              var date = new Date(data.getValue(i, 0));
-              data.setValue(i, 1, "<a href=../pages/competition.html?competition=" + encodeURIComponent(competition) + "&year=" + date.getFullYear() + ">" + competition  + "</a>");
-            }
-
-            var table = new google.visualization.Table(document.getElementById('table_div'));
-            var options = {
-              width: '100%', //height: '100px',
-              alternatingRowStyle: true,
-              sortAscending: false,
-              sortColumn: 0,
-              page: "enable",
-              pageSize: 15,
-              allowHtml: true
-            };
-
-            table.draw(data, options);
-
-            var dataView = new google.visualization.DataView(data);
-
-            dataView.setColumns([
-              { sourceColumn: 0, role: 'domain', type: 'date', label: 'Date' },
-              { sourceColumn: 1, role: 'annotation', type: 'string', label: 'Competition'},
-              { sourceColumn: 4, role: 'data', type: 'number', label: 'Snatch' },
-              { sourceColumn: 5, role: 'data', type: 'number', label: 'Clean & Jerk' }
-            ]);
-
-            var chart = new google.charts.Scatter(document.getElementById('scatterchart'));
-            var options = {
-              chart: {
-                title: 'Athlete progress',
-                subtitle: 'Competition maxes'
-              }
-            };
-
-            chart.draw(dataView, google.charts.Scatter.convertOptions(options));
-          });
+          chart.draw(dataView, google.charts.Scatter.convertOptions(options));
         });
-      </script>
-    <meta charset="utf-8">
-    <title>Upforce</title>
+      });
+    </script>
   </head>
   <body>
-    <div id="table_div"></div>
-    <div id="scatterchart" style="width: 1000px; height: 400px"></div>
+    <section class="page-header">
+      <h1 class="project-name">Upforce</h1>
+      <h2 class="project-tagline">Portuguese weightlifting statistics</h2>
+      <a href="https://github.com/andrewfonseca/upforce" class="btn">View on GitHub</a>
+    </section>
+
+    <section class="main-content">
+      <h3>
+
+<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>{athlete-name}</h3>
+
+<div id="scatterchart" style="width: 1000px; height: 400px"></div>
+<div id="table_div"></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/andrewfonseca/upforce">Upforce</a> is maintained by <a href="https://github.com/andrewfonseca">andrewfonseca</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+
   </body>
 </html>
